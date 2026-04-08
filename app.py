@@ -6,6 +6,11 @@ st.set_page_config(
 )
 
 st.title("📊 Free WACC Calculator (Step-by-Step)")
+st.markdown(
+    "Calculate Weighted Average Cost of Capital (WACC) easily with step-by-step explanation. "
+    "Perfect for finance students, assignments, and exam preparation."
+)
+st.caption("Keywords: WACC calculator, cost of capital, finance tool, WACC formula, student finance calculator")
 st.write("Calculate Weighted Average Cost of Capital with a step-by-step breakdown.")
 
 E = st.number_input("Equity (E)", min_value=0.0, value=100.0)
