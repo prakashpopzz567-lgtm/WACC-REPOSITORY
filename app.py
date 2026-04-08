@@ -1,6 +1,9 @@
 import streamlit as st
 
-st.set_page_config(page_title="WACC Calculator", layout="centered")
+st.set_page_config(
+    page_title="Free WACC Calculator (Step-by-Step) | Finance Tool",
+    layout="centered"
+)
 
 st.title("📊 WACC Calculator")
 st.write("Calculate Weighted Average Cost of Capital with a step-by-step breakdown.")
