@@ -98,13 +98,6 @@ with hero:
     left, right = st.columns([0.65, 0.35])
     with left:
         st.title("📊 WACC Studio")
-        st.markdown(
-            "A student-friendly, finance-grade WACC calculator with CAPM, market fetch, and scenario analysis. "
-            "Built for clarity, ready for assignments and quick valuations."
-        )
-        st.caption(
-            "Includes CAPM cost of equity, beta sensitivity, and auto-fill options for Treasury yields and market data."
-        )
     with right:
         today = dt.date.today().strftime("%b %d, %Y")
         st.metric("Today", today)
