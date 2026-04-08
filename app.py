@@ -294,60 +294,56 @@ if last:
 
         # Scenario analysis
         st.subheader("Scenario analysis")
-        if capm_inputs:
-            scen_col1, scen_col2 = st.columns([0.55, 0.45])
-            with scen_col1:
-                beta_scenario = st.slider(
-                    "Adjust beta to see its impact",
-                    min_value=0.0,
-                    max_value=2.5,
-                    value=capm_inputs["beta"],
-                    step=0.05,
-                )
-                leverage_shift = st.slider(
-                    "Change capital mix (equity ↑ / debt ↓)",
-                    min_value=-50,
-                    max_value=50,
-                    value=0,
-                    step=5,
-                    help="Positive values tilt towards more equity; negative towards more debt (in % of current amounts).",
-                )
+        scen_col1, scen_col2 = st.columns([0.55, 0.45])
+        with scen_col1:
+            beta_scenario = st.slider(
+                "Adjust beta to see its impact",
+                min_value=0.0,
+                max_value=2.5,
+                value=(capm_inputs["beta"] if capm_inputs else DEFAULTS["beta"]),
+                step=0.05,
+                help="Available even without CAPM; uses default market assumptions if CAPM not selected.",
+            )
+            leverage_shift = st.slider(
+                "Change capital mix (equity ↑ / debt ↓)",
+                min_value=-50,
+                max_value=50,
+                value=0,
+                step=5,
+                help="Positive values tilt towards more equity; negative towards more debt (in % of current amounts).",
+            )
 
-            with scen_col2:
-                adj_equity = equity * (1 + leverage_shift / 100)
-                adj_debt = max(debt * (1 - leverage_shift / 100), 0)
-                scenario_re = capm_cost_of_equity(
-                    capm_inputs["rf_pct"] / 100,
-                    beta_scenario,
-                    capm_inputs["rm_pct"] / 100,
-                )
-                scenario_wacc, _, _ = compute_wacc(adj_equity, adj_debt, scenario_re, rd, tax)
-                if scenario_wacc is not None:
-                    st.metric("Scenario WACC", f"{scenario_wacc * 100:.2f}%")
-                else:
-                    st.warning("Scenario could not be computed (capital structure became zero).")
-                st.caption(
-                    "Scenario recalculates WACC using adjusted beta and capital mix while holding cost of debt and tax constant."
-                )
+        with scen_col2:
+            adj_equity = equity * (1 + leverage_shift / 100)
+            adj_debt = max(debt * (1 - leverage_shift / 100), 0)
+            rf_base = (capm_inputs["rf_pct"] if capm_inputs else DEFAULTS["risk_free"]) / 100
+            rm_base = (capm_inputs["rm_pct"] if capm_inputs else DEFAULTS["market_return"]) / 100
+            scenario_re = capm_cost_of_equity(rf_base, beta_scenario, rm_base)
+            scenario_wacc, _, _ = compute_wacc(adj_equity, adj_debt, scenario_re, rd, tax)
+            if scenario_wacc is not None:
+                st.metric("Scenario WACC", f"{scenario_wacc * 100:.2f}%")
+            else:
+                st.warning("Scenario could not be computed (capital structure became zero).")
+            st.caption(
+                "Scenario recalculates WACC using adjusted beta and capital mix; keeps cost of debt and tax constant."
+            )
 
-            # Chart: WACC vs beta
-            beta_range = [round(0.5 + 0.1 * i, 2) for i in range(21)]
-            rf_base = capm_inputs["rf_pct"] / 100
-            rm_base = capm_inputs["rm_pct"] / 100
-            wacc_series = [
-                compute_wacc(
-                    equity,
-                    debt,
-                    capm_cost_of_equity(rf_base, b, rm_base),
-                    rd,
-                    tax,
-                )[0]
-                * 100
-                for b in beta_range
-            ]
-            st.line_chart({"beta": beta_range, "WACC (%)": wacc_series}, x="beta", y="WACC (%)")
-        else:
-            st.info("Enable CAPM mode to use beta and capital mix scenarios.")
+        # Chart: WACC vs beta
+        beta_range = [round(0.5 + 0.1 * i, 2) for i in range(21)]
+        rf_chart = (capm_inputs["rf_pct"] if capm_inputs else DEFAULTS["risk_free"]) / 100
+        rm_chart = (capm_inputs["rm_pct"] if capm_inputs else DEFAULTS["market_return"]) / 100
+        wacc_series = [
+            compute_wacc(
+                equity,
+                debt,
+                capm_cost_of_equity(rf_chart, b, rm_chart),
+                rd,
+                tax,
+            )[0]
+            * 100
+            for b in beta_range
+        ]
+        st.line_chart({"beta": beta_range, "WACC (%)": wacc_series}, x="beta", y="WACC (%)")
 
 st.divider()
 with st.expander("Assumptions & data sources", expanded=False):
