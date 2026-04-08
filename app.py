@@ -5,7 +5,7 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("📊 WACC Calculator")
+st.title("📊 Free WACC Calculator (Step-by-Step)")
 st.write("Calculate Weighted Average Cost of Capital with a step-by-step breakdown.")
 
 E = st.number_input("Equity (E)", min_value=0.0, value=100.0)
