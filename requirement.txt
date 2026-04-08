@@ -1,12 +1,1 @@
-streamlit (for easy deployment)
-
-phase 1 
-    simpler and easy to input the required variables such as 
-    -equity 
-    -Debt
-    -Cost of Equity (%)
-    -Cost of Debt  (%)
-
-
-PHASE 2 
-    in this the advancement takes place where students and professors can actully copy paste the pdf of text format to get the WACC report 
+streamlit 
