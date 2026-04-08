@@ -8,7 +8,6 @@ import streamlit as st
 # --- Page config ---
 st.set_page_config(
     page_title="Free WACC Calculator | CAPM & Scenarios",
-    page_icon="📊",
     layout="wide",
 )
 
@@ -97,7 +96,12 @@ hero = st.container()
 with hero:
     left, right = st.columns([0.65, 0.35])
     with left:
-        st.title("📊 WACC Studio")
+        st.title("WACC Calculator")
+        st.markdown(
+            "How to use: enter equity and debt, pick manual or CAPM for cost of equity, "
+            "then calculate. Use the scenario sliders to see how beta or the capital mix "
+            "changes WACC. Auto-fill can fetch a Treasury risk-free rate and beta (if an API key is set)."
+        )
     with right:
         today = dt.date.today().strftime("%b %d, %Y")
         st.metric("Today", today)
